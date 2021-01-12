@@ -421,7 +421,6 @@ def calculate_chunk(cutoff_time, chunk_size, feature_set, entityset, approximate
                 inner_grouped = _chunk_dataframe_groups(inner_grouped, chunk_size)
 
             for time_last, group in inner_grouped:
-
                 # sort group by instance id
                 ids = group['instance_id'].sort_values().values
                 if no_unapproximated_aggs and approximate is not None:
@@ -430,7 +429,6 @@ def calculate_chunk(cutoff_time, chunk_size, feature_set, entityset, approximate
                     window = training_window
 
                 # calculate values for those instances at time time_last
-
                 _feature_matrix = calc_results(time_last,
                                                ids,
                                                precalculated_features=precalculated_features_trie,
@@ -461,6 +459,8 @@ def calculate_chunk(cutoff_time, chunk_size, feature_set, entityset, approximate
                                                                       how='right')
                     _feature_matrix.set_index(['instance_id', target_time], inplace=True)
                     _feature_matrix.index.set_names([id_name, 'time'], inplace=True)
+
+                    #kind argumment is not suported for cudf
                     if is_instance(_feature_matrix, cudf, 'DataFrame'):
                         _feature_matrix.sort_index(level=1, inplace=True)
                     else:
